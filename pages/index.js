@@ -29,17 +29,6 @@ export default function Home() {
         </div>
       </header>
 
-      <div
-        className="gallery js-flickity"
-        data-flickity-options='{ "wrapAround": true }'
-      >
-        <div className="gallery-cell"></div>
-        <div className="gallery-cell"></div>
-        <div className="gallery-cell"></div>
-        <div className="gallery-cell"></div>
-        <div className="gallery-cell"></div>
-      </div>
-
       <div className="flex w-full bg-gray-900 h-52">
         <h1 className="w-max text-white self-center m-auto text-5xl">
           MansaMind

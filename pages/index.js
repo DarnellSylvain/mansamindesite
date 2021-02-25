@@ -54,7 +54,7 @@ export default function Home({ data }) {
         <title>MansaMind</title>
       </Head>
 
-      <nav className="container text-heading_color flex flex-wrap items-center justify-between max-w-6xl m-auto p-8">
+      <nav className="container text-heading_color flex flex-wrap items-center justify-between max-w-6xl m-auto p-2 sm:p-8">
         <div className="w-full relative flex justify-between sm:w-auto sm:static sm:block sm:justify-start">
           <div>
             <Image src="/mansamindlogo.png" alt="logo" width="38" height="38" />
@@ -77,22 +77,22 @@ export default function Home({ data }) {
           <ul className="flex flex-col sm:flex-row list-none sm:ml-auto mt-4 sm:mt-0">
             <li>
               <Link href="/">
-                <a className="pl-8 sm:pl-0">Home</a>
+                <a className="pl-8 sm:pl-0 mb-2 sm:mb-0">Home</a>
               </Link>
             </li>
             <li>
               <Link href="/dashboard">
-                <a className="pl-8">Dashboard</a>
+                <a className="pl-8 pb-2 sm:pb-0">Dashboard</a>
               </Link>
             </li>
             <li>
               <Link href="/bookclub">
-                <a className="pl-8">Bookclub</a>
+                <a className="pl-8 pb-2 sm:pb-0">Bookclub</a>
               </Link>
             </li>
             <li>
               <Link href="/blog">
-                <a className="pl-8">Blog</a>
+                <a className="pl-8 pb-2 sm:pb-0">Blog</a>
               </Link>
             </li>
           </ul>
@@ -108,7 +108,7 @@ export default function Home({ data }) {
       <BookCarousel />
       {/* Book Recommendations carousal  */}
 
-      <div className="container max-w-5xl mx-auto my-8 p-1">
+      <div className="container max-w-5xl mx-auto my-8 p-2">
         <h3 className="text-lg mb-4">Latest Post</h3>
 
         <div className="grid md:grid-cols-12 gap-4   ">

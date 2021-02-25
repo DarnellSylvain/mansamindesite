@@ -9,6 +9,10 @@ module.exports = {
       heading_color: "#111827",
       ...colors,
     },
+
+    maxHeight: {
+      yt: "369px",
+    },
     extend: {},
   },
   variants: {

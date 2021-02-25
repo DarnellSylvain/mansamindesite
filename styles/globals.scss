@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  scroll-behavior: smooth;
+
+  padding: 0;
+  margin: 0;
+
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+    Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.videoWrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 */
+  height: 0;
+}
+.videoWrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.scrollbar::-webkit-scrollbar {
+  height: 0px;
+  width: 10px;
+  z-index: 2;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  height: 10px;
+  width: 1px;
+  border-right: 7px solid white;
+  border-radius: 5px;
+  z-index: 2;
+}

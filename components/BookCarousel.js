@@ -1,3 +1,4 @@
+import Image from "next/image";
 import styles from "@/styles/carousel.module.scss";
 
 const BookCarousel = () => {
@@ -7,22 +8,49 @@ const BookCarousel = () => {
 
       <div className={styles.container}>
         <div className={styles.card}>
-          <img src="https://i.imgur.com/HRpwpZb.jpg"></img>
+          <Image
+            src="https://i.imgur.com/HRpwpZb.jpg"
+            width={203}
+            height={311}
+            layout="intrinsic"
+            alt="Book description here"
+          ></Image>
         </div>
         <div className={`${styles.card}`}>
-          <img src="https://i.imgur.com/whlhaKp.jpg"></img>
+          <Image
+            src="https://i.imgur.com/whlhaKp.jpg"
+            width={203}
+            height={311}
+            layout="intrinsic"
+            alt="Book description here"
+          ></Image>
         </div>
         <div className={`${styles.card}`}>
-          <img src="https://i.imgur.com/GQ07Bag.jpg"></img>
+          <Image
+            src="https://i.imgur.com/GQ07Bag.jpg"
+            width={203}
+            height={311}
+            layout="intrinsic"
+            alt="Book description here"
+          ></Image>
         </div>
         <div className={`${styles.card} object-contain`}>
-          <img src="https://i.imgur.com/xzOPmv4.jpg"></img>
+          <Image
+            src="https://i.imgur.com/xzOPmv4.jpg"
+            width={203}
+            height={311}
+            layout="intrinsic"
+            alt="Book description here"
+          ></Image>
         </div>
         <div className={`${styles.card}`}>
-          <img src="https://i.imgur.com/S0CuSLB.jpg"></img>
-        </div>
-        <div className={`${styles.card}`}>
-          <img src="https://images-na.ssl-images-amazon.com/images/I/41H9ZCmjenL._SX331_BO1,204,203,200_.jpg"></img>
+          <Image
+            src="https://i.imgur.com/S0CuSLB.jpg"
+            width={203}
+            height={311}
+            layout="intrinsic"
+            alt="Book description here"
+          ></Image>
         </div>
       </div>
     </div>

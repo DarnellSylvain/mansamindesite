@@ -1,29 +1,20 @@
-import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
 
 import { useState } from "react";
 
 import PopularPostCard from "@/components/PopularPostCard";
-import BlogPost from "@/components/BlogPost";
+import BlogCard from "@/components/BlogCard";
 import BookCarousel from "@/components/BookCarousel";
 
-import {
-  FaBars,
-  FaTimes,
-  FaTwitter,
-  FaInstagram,
-  FaYoutube,
-} from "react-icons/fa";
-
-import styles from "@/styles/carousel.module.scss";
+import Container from "@/components/Container";
 
 const URL = `https://www.googleapis.com/youtube/v3/playlistItems`;
 
 // Get Props for the homepage
 export async function getStaticProps() {
   const res = await fetch(
-    `${URL}?part=snippet&playlistId=UU_JxE9KiFhLdZa4kIYfqAUg&maxResults=20&rel=0&key=${process.env.YOUTUBE_API_KEY}`
+    `${URL}?part=snippet&playlistId=UUtwy_rjEevFjUsFaH2P2dPQ&maxResults=20&rel=0&key=${process.env.YOUTUBE_API_KEY}`
   );
   const data = await res.json();
 
@@ -31,102 +22,53 @@ export async function getStaticProps() {
     props: {
       data,
     },
+
+    revalidate: 60,
   };
 }
 
 // Index Page
 export default function Home({ data }) {
   // State
-  const [selectedVid, setSelectedVid] = useState(
-    data.items[0].snippet.resourceId.videoId
-  );
-
-  const [navbarOpen, setNavbarOpen] = useState(false);
-
+  const [selectedVid, setSelectedVid] = useState({
+    id: data.items[0].snippet.resourceId.videoId,
+    title: data.items[0].snippet.title,
+    thumbnails: data.items[0].snippet.thumbnails,
+  });
   // Handles
-  const handleSelectedVid = (id) => {
-    setSelectedVid(id);
+  const handleSelectedVid = (id, title, thumbnails) => {
+    setSelectedVid({ id, title, thumbnails });
   };
 
   return (
-    <div className="container m-auto p-0 overflow-hidden">
-      <Head>
-        <title>MansaMind</title>
-      </Head>
-
-      <nav className="container text-heading_color flex flex-wrap items-center justify-between max-w-6xl m-auto p-2 sm:p-8">
-        <div className="w-full relative flex justify-between sm:w-auto sm:static sm:block sm:justify-start">
-          <div>
-            <Image src="/mansamindlogo.png" alt="logo" width="38" height="38" />
-          </div>
-          <button
-            type="button"
-            className="sm:hidden text-2xl cursor-pointer outline-none focus:outline-none"
-            onClick={() => setNavbarOpen(!navbarOpen)}
-          >
-            {navbarOpen ? <FaTimes /> : <FaBars />}
-          </button>
-        </div>
-
-        <div
-          className={
-            "sm:flex flex-grow items-center" +
-            (navbarOpen ? " flex" : " hidden")
-          }
-        >
-          <ul className="flex flex-col sm:flex-row list-none sm:ml-auto mt-4 sm:mt-0">
-            <li>
-              <Link href="/">
-                <a className="pl-8 sm:pl-0 mb-2 sm:mb-0">Home</a>
-              </Link>
-            </li>
-            <li>
-              <Link href="/dashboard">
-                <a className="pl-8 pb-2 sm:pb-0">Dashboard</a>
-              </Link>
-            </li>
-            <li>
-              <Link href="/bookclub">
-                <a className="pl-8 pb-2 sm:pb-0">Bookclub</a>
-              </Link>
-            </li>
-            <li>
-              <Link href="/blog">
-                <a className="pl-8 pb-2 sm:pb-0">Blog</a>
-              </Link>
-            </li>
-          </ul>
-        </div>
-      </nav>
-
+    <Container>
       <div className="flex bg-gray-900 h-52 m-auto">
         <h1 className="w-max text-white self-center m-auto text-5xl ">
           MansaMind
         </h1>
       </div>
-
       <BookCarousel />
       {/* Book Recommendations carousal  */}
-
       <div className="container max-w-5xl mx-auto my-8 p-2">
         <h3 className="text-lg mb-4">Latest Post</h3>
 
         <div className="grid md:grid-cols-12 gap-4   ">
           <main className="md:col-start-1 md:col-end-9">
-            <BlogPost
+            <BlogCard
               title="WandaVision - How Marvel Reinvented Their Formula"
-              img="https://i.imgur.com/qYrLj3J.jpg"
+              img="/blog1.jpg"
               tag="Media"
             />
-            <BlogPost
+
+            <BlogCard
               title="The best advice I ever got was to just make things happen"
-              img="https://i.imgur.com/CVOJRoi.jpg"
+              img="/blog2.jpg"
               tag="Technology"
             />
-            <BlogPost
+            <BlogCard
               title="Everything I Know About Style Guides, Design Systems, and Component Libraries
-              "
-              img="https://i.imgur.com/W7Sgr1E.jpg"
+          "
+              img="/blog3.jpg"
               tag="Web Development"
             />
           </main>
@@ -207,12 +149,15 @@ export default function Home({ data }) {
                 className="w-full mb-2 object-fill h-0 relative videoWrapper"
               >
                 <iframe
+                  title={selectedVid.title}
                   width="1280"
                   height="720"
-                  src={`https://www.youtube.com/embed/${selectedVid}?modestbranding=1&iv_load_policy=3`}
+                  src={`https://www.youtube.com/embed/${selectedVid.id}?modestbranding=1&iv_load_policy=3`}
+                  srcDoc={`<style>*{padding:0;margin:0;overflow:hidden}html,body{height:100%}img,span{position:absolute;width:100%;top:0;bottom:0;margin:auto}span{height:1.5em;text-align:center;font:48px/1.5 sans-serif;color:white;text-shadow:0 0 0.5em black}</style><a href=https://www.youtube.com/embed/${selectedVid.id}?modestbranding=1&iv_load_policy=3><img src=${selectedVid.thumbnails.standard.url} alt="${selectedVid.title}"><span>▶</span></a>`}
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
+                  loading="lazy"
                 ></iframe>
               </div>
 
@@ -230,20 +175,26 @@ export default function Home({ data }) {
                   <div
                     key={item.id}
                     className="text_text_color w-full mb-2"
-                    onClick={() => handleSelectedVid(videoId)}
+                    onClick={() =>
+                      handleSelectedVid(videoId, title, thumbnails)
+                    }
                   >
                     <Link href="/#YTvid">
                       <a>
                         <div className="flex items-center">
-                          <img
-                            className="w-28 object-cover mb-2 mr-2"
-                            src={medium.url}
-                            alt=""
-                          ></img>
-
-                          <div>
-                            <h3 className="text-sm text-white">{title}</h3>
+                          <div className="mr-2">
+                            <Image
+                              src={medium.url}
+                              width={256}
+                              height={144}
+                              layout="intrinsic"
+                              alt={title}
+                            />
                           </div>
+
+                          <h3 className="text-sm text-white w-full h-16 overflow-hidden">
+                            {title}
+                          </h3>
                         </div>
                       </a>
                     </Link>{" "}
@@ -254,33 +205,6 @@ export default function Home({ data }) {
           </div>
         </div>
       </div>
-
-      <footer className="bg-gray-900 bottom-0 flex flex-col items-center justify-center text-center relative">
-        <div>
-          <h1 className="mt-4 text-2xl text-white">Follow us on:</h1>
-          <div className="flex w-content justify-between my-6 text-3xl text-white">
-            <a
-              href="https://www.youtube.com/channel/UCtwy_rjEevFjUsFaH2P2dPQ"
-              target="_blank"
-            >
-              <FaYoutube />
-            </a>
-
-            <a href="https://twitter.com/mansa_mind" target="_blank">
-              <FaTwitter />
-            </a>
-
-            <a href="https://www.instagram.com/mansaminds/" target="_blank">
-              <FaInstagram />
-            </a>
-          </div>
-        </div>
-
-        <div className="bg-white w-max border rounded-full p-2 absolute hidden right-0 bottom-0 mr-4 md:flex">
-          <Image src="/mansamindlogo.png" alt="logo" width="68" height="68" />
-        </div>
-        <p className="text-white">&copy; Mansamind</p>
-      </footer>
-    </div>
+    </Container>
   );
 }

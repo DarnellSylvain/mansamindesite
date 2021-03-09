@@ -1,15 +1,23 @@
 import Link from "next/link";
+import Image from "next/image";
 
-const BlogPost = ({ title, img, tag }) => {
+const BlogCard = ({ title, img, tag }) => {
   return (
     <div id="card" className="rounded-lg shadow-lg overflow-hidden pb-2 mb-4">
       <div>
-        <img className="h-96 w-full object-cover" src={img} alt=""></img>
+        <Image
+          src={img}
+          width={666}
+          height={384}
+          className="rounded"
+          layout="intrinsic"
+          alt={title}
+        />
       </div>
 
       <div className="p-4 pt-5">
         <p className="text-base leading-5 text-text_color">{tag}</p>
-        <Link href="/">
+        <Link href="/blog/WhateverTheTitleIs">
           <a>
             <h3 className="font-medium text-2xl text-heading_color mt-3.5">
               {title}
@@ -21,4 +29,4 @@ const BlogPost = ({ title, img, tag }) => {
   );
 };
 
-export default BlogPost;
+export default BlogCard;

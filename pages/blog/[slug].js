@@ -1,8 +1,13 @@
 import Image from "next/image";
+import urlFor from "@/utils/imageBuilder";
+import BlockContent from "@sanity/block-content-to-react";
+import groq from "groq";
+import serializers from "@/lib/client";
 
 import { format, parseISO } from "date-fns";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
+import { useRouter } from "next/router";
 
 import PopularPostCard from "@/components/PopularPostCard";
 
@@ -10,8 +15,50 @@ import { FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa";
 import Container from "@/components/Container";
 import Comment from "@/components/Comment";
 import BlogCard from "@/components/BlogCard";
+import client from "@/lib/client";
 
-const BlogPost = () => {
+export const getStaticProps = async (context) => {
+  const { slug = "" } = context.params;
+  // const { slug = "" } = context.query;
+
+  const query = groq`*[ _type == "post" && slug.current == "${slug}" ][0]{title, "name": author->name, body, mainImage, "authorImage": author->image, publishedAt}`;
+
+  const post = await client.fetch(query, { slug });
+
+  return {
+    revalidate: 60 * 60 * 24,
+    props: {
+      post,
+    },
+  };
+};
+
+export async function getStaticPaths() {
+  const query = groq`*[ _type == "post"]`;
+  const posts = await client.fetch(query);
+
+  const paths = posts.map((post) => ({
+    params: {
+      slug: post.slug.current,
+    },
+  }));
+
+  return {
+    paths,
+    fallback: false,
+  };
+}
+
+const BlogPost = ({ post }) => {
+  const {
+    title = "Missing Title",
+    name = "Missing Name",
+    authorImage,
+    mainImage,
+    publishedAt,
+    body,
+  } = post;
+
   const inputCom = useRef(null);
   const inputName = useRef(null);
   const inputEmail = useRef(null);
@@ -20,7 +67,7 @@ const BlogPost = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log("hello");
+
     console.log(
       inputCom.current.value,
       inputEmail.current.value,
@@ -29,20 +76,22 @@ const BlogPost = () => {
   };
 
   return (
-    <Container title="Some Title - Mansamind">
+    <Container title={`${title} - Mansamind`}>
       <div className="container max-w-5xl mx-auto my-8 p-2">
-        <h3 className="text-3xl mb-4 max-w-2xl font-medium">
-          The Best Advice I Ever Got Was To Just Make Things Happen
-        </h3>
+        <h3 className="text-3xl mb-4 max-w-2xl font-medium">{title}</h3>
         <div className="flex items-center mb-4">
           <div className="mr-4">
-            <Image src="/mansamindlogo.png" alt="logo" width="38" height="38" />
+            <Image
+              src={urlFor(authorImage).url()}
+              alt="logo"
+              width="40"
+              height="40"
+              className="rounded-full"
+            />
           </div>
           <div>
-            <h4>Mansamind</h4>
-            <p className="text-xs">
-              {format(parseISO(new Date().toISOString()), "PPpp")}
-            </p>
+            <h4>{name}</h4>
+            <p className="text-xs">{format(parseISO(publishedAt), "PPP")}</p>
           </div>
         </div>
 
@@ -50,65 +99,22 @@ const BlogPost = () => {
           <div className="md:col-start-1 md:col-end-9">
             <main className="text-text_color">
               <Image
-                src="https://i.imgur.com/qYrLj3J.jpg"
+                src={urlFor(mainImage).url()}
                 width={666}
                 height="384"
                 layout="intrinsic"
                 alt="Current book"
               />
-
-              <p>
-                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                diam nonumy eirmod tempor invidunt ut labore et dolore magna
-                aliquyam erat, sed diam voluptua.
-                <br />
-                <br />
-                At vero eos et accusam et justo duo dolores et ea rebum. Stet
-                clita kasd gubergren, no sea takimata sanctus est Lorem ipsum
-                dolor sit amet. Lorem ipsum dolor sit amet, consetetur
-                sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
-                labore et dolore magna aliquyam erat, sed diam voluptua.
-              </p>
-              <br />
-              <ol>
-                <li>1. Lorem ipsum dolor sit amet</li>
-              </ol>
-              <br />
-
-              <p>
-                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                diam nonumy eirmod tempor invidunt ut labore et dolore magna
-                aliquyam erat, sed diam voluptua. At vero eos et accusam et
-                justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
-                takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
-                dolor sit ame. At vero eos et accusam et justo duo dolores et ea
-                rebum. Stet clita kasd gubergren, no sea takimata sanctus est
-                Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet,
-                consetetur sadipscing elitr, sed diam nonumy eirmod tempor
-                invidunt ut labore et dolore magna aliquyam erat, sed diam
-                voluptua.
-              </p>
-
-              <br></br>
-              <ul>
-                <li>Lorem ipsum dolor sit amet</li>
-                <li>Lorem ipsum dolor sit amet</li>
-                <li>Lorem ipsum dolor sit amet</li>
-                <li>Lorem ipsum dolor sit amet</li>
-                <li>Lorem ipsum dolor sit amet</li>
-                <li>Lorem ipsum dolor sit amet</li>
-              </ul>
-              <br></br>
-              <div>
-                <Image
-                  src="https://i.imgur.com/qYrLj3J.jpg"
-                  width={666}
-                  height="384"
-                  layout="intrinsic"
-                  alt="Current book"
+              <div className="prose w-full">
+                <BlockContent
+                  blocks={body}
+                  serializers={serializers}
+                  imageOptions={{ w: 666 }}
+                  {...client.config()}
                 />
-                <small>Description of image</small>
+              </div>
 
+              <div>
                 <div className="flex items-center mt-6">
                   <p className="mr-4 border py-1 px-4">Tag</p>
                   <p className="mr-4 border py-1 px-4">Tag</p>
@@ -274,7 +280,7 @@ const BlogPost = () => {
             </div>
           </aside>
         </div>
-        <h1 className="mt-6 text-xl ">Suggested Posts:</h1>
+        <h1 className="mt-6 text-xl mb-4">Suggested Posts:</h1>
         <div className="grid md:grid-cols-12 gap-4">
           <div className="col-span-6">
             <BlogCard

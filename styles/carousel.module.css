@@ -1,0 +1,46 @@
+.container {
+  height: -webkit-max-content;
+  height: -moz-max-content;
+  height: max-content;
+  max-width: 100%;
+  top: 60px;
+  left: calc(50% - 300px);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin: 32px auto;
+}
+
+.card {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 203px;
+  background-color: #17141d;
+  -webkit-box-shadow: -1rem 0 1rem 0.1rem rgba(0, 0, 0, 0.534);
+          box-shadow: -1rem 0 1rem 0.1rem rgba(0, 0, 0, 0.534);
+  /*   margin-left: -50px; */
+  -webkit-transition: 0.4s ease-out;
+  transition: 0.4s ease-out;
+  position: relative;
+  left: 0px;
+}
+
+.card:not(:first-child) {
+  margin-left: -50px;
+}
+
+.card:hover {
+  -webkit-transform: translateY(-20px);
+          transform: translateY(-20px);
+  -webkit-transition: 0.4s ease-out;
+  transition: 0.4s ease-out;
+}
+
+.card:hover ~ .card {
+  position: relative;
+  left: 50px;
+  -webkit-transition: 0.4s ease-out;
+  transition: 0.4s ease-out;
+}
+/*# sourceMappingURL=carousel.module.css.map */

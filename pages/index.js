@@ -1,5 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
+import client from "@/lib/client";
+import groq from "groq";
+
+import urlFor from "@/utils/imageBuilder";
 
 import { useState } from "react";
 
@@ -18,17 +22,34 @@ export async function getStaticProps() {
   );
   const data = await res.json();
 
+  const query = groq`*[ _type == "post"]`;
+  const posts = await client.fetch(query);
+
   return {
     props: {
       data,
+      posts,
     },
 
     revalidate: 60,
   };
 }
 
+// export async function getStaticPaths() {
+//   const { sites } = await getAllSites();
+//   const paths = sites.map((site) => ({
+//     params: {
+//       siteId: site.id.toString(),
+//     },
+//   }));
+//   return {
+//     paths,
+//     fallback: false,
+//   };
+// }
+
 // Index Page
-export default function Home({ data }) {
+export default function Home({ data, posts }) {
   // State
   const [selectedVid, setSelectedVid] = useState({
     id: data.items[0].snippet.resourceId.videoId,
@@ -54,23 +75,15 @@ export default function Home({ data }) {
 
         <div className="grid md:grid-cols-12 gap-4   ">
           <main className="md:col-start-1 md:col-end-9">
-            <BlogCard
-              title="WandaVision - How Marvel Reinvented Their Formula"
-              img="/blog1.jpg"
-              tag="Media"
-            />
-
-            <BlogCard
-              title="The best advice I ever got was to just make things happen"
-              img="/blog2.jpg"
-              tag="Technology"
-            />
-            <BlogCard
-              title="Everything I Know About Style Guides, Design Systems, and Component Libraries
-          "
-              img="/blog3.jpg"
-              tag="Web Development"
-            />
+            {posts.map((post) => (
+              <BlogCard
+                key={post._id}
+                title={post.title}
+                img={urlFor(post.mainImage).url()}
+                slug={post.slug.current}
+                publishedAt={post.publishedAt}
+              />
+            ))}
           </main>
 
           <aside className="md:col-start-9 md:col-end-13" id="aside">
